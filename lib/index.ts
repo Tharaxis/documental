@@ -52,7 +52,10 @@ export async function main(cwd: string): Promise<void> {
 
       console.log(`Processing component in file: ${sourceFile.fileName}`);
 
-      const compiledTemplate = handlebars.compile(template, { noEscape: true });
+      const compiledTemplate = handlebars.compile(
+        `${template}\n##### Generated with [Documental](https://github.com/Tharaxis/documental)`,
+        { noEscape: true }
+      );
 
       const result = compiledTemplate({
         ...component,

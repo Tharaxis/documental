@@ -2,15 +2,16 @@ import glob from "glob";
 
 /**
  * Gets the set of files.
+ * @param cwd The current working directory to search from.
  * @param globs The globs to get the files from.
  * @returns The array of files.
  */
-export async function getProgramFiles(globs: ReadonlyArray<string>): Promise<ReadonlyArray<string>> {
+export async function getProgramFiles(cwd: string, globs: ReadonlyArray<string>): Promise<ReadonlyArray<string>> {
   const paths = new Set<string>();
 
   for (const path of globs) {
     const matches = await new Promise<string[]>((resolve, reject) => {
-      glob(path, { cwd: process.cwd() }, (err, matches) => {
+      glob(path, { cwd }, (err, matches) => {
         if (err) {
           reject(err);
           return;

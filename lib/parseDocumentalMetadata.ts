@@ -37,7 +37,7 @@ export function parseDocumentalMetadata(sourceFile: ts.SourceFile): DocumentalMe
 
   const comment = fullText.substring(candidate.pos, candidate.end);
   const [parsedComment] = parseComment(comment, { spacing: "preserve" });
-  const { tags } = parsedComment;
+  const tags = parsedComment?.tags ?? [];
 
   if (tags.length === 0) return null;
   const [firstTag] = tags;

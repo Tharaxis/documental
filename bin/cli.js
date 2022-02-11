@@ -1,4 +1,13 @@
 #! /usr/bin/env node
 
-require("ts-node").register();
-require("../lib/index.ts");
+const path = require("path");
+
+require("ts-node").register({
+  cwd: path.resolve(__dirname, "../")
+});
+
+require("../lib/index")
+  .main(process.cwd())
+  .then(() => process.exit());
+
+process.stdin.resume();

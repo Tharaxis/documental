@@ -10,20 +10,21 @@ import { getProgramFiles } from "./getProgramFiles";
 
 /**
  * The main application entry point.
+ * @param cwd The current working directory.
  */
-async function main(): Promise<void> {
+export async function main(cwd: string): Promise<void> {
   try {
     console.log();
     console.log("Documental")
     console.log("----------");
     console.log();
 
-    const { files, templates } = await loadConfiguration();
+    const { files, templates } = await loadConfiguration(cwd);
 
     if (!files || files.length === 0) throw new Error("No files specified.");
     if (!templates) throw new Error("No templates specified.");
 
-    const paths = await getProgramFiles(files);
+    const paths = await getProgramFiles(cwd, files);
     if (paths.length === 0) throw new Error("No files found.");
 
     const program = ts.createProgram(paths, {
@@ -32,7 +33,7 @@ async function main(): Promise<void> {
     });
 
     const typeChecker = program.getTypeChecker();
-    const templateTable = await loadTemplates(templates ?? {});
+    const templateTable = await loadTemplates(cwd, templates ?? {});
 
     for (const sourceFile of program.getSourceFiles()) {
       if (sourceFile.isDeclarationFile) continue;
@@ -62,11 +63,6 @@ async function main(): Promise<void> {
       await fs.writeFile(path.resolve(documentalInfo.path, "./README.md"), result, { encoding: "utf-8" });
     }
   } catch {
-
   } finally {
-    process.exit();
   }
 }
-
-main();
-process.stdin.resume();

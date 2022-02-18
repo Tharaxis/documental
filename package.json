@@ -1,6 +1,6 @@
 {
   "name": "documental",
-  "version": "0.1.27",
+  "version": "0.2.20",
   "description": "Documental React Component Documentation Generator",
   "main": "./lib/index.ts",
   "bin": "./bin/cli.js",
@@ -9,6 +9,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Tharaxis/documental.git"
+  },
+  "scripts": {
+    "start": "node ./bin/cli.js"
   },
   "dependencies": {
     "@types/glob": "^7.2.0",

@@ -7,8 +7,8 @@ import path from "path";
  * @param templates The paths to the templates to load.
  * @returns The set of templates.
  */
-export async function loadTemplates(cwd: string, templates: Readonly<Record<string, string>>): Promise<Readonly<Record<string, string>>> {
-  const result: Record<string, string> = {};
+export async function loadTemplates(cwd: string, templates: Readonly<Record<string, string>>): Promise<ReadonlyMap<string, string>> {
+  const result = new Map<string, string>();
 
   for (const key of Object.keys(templates)) {
 
@@ -16,7 +16,7 @@ export async function loadTemplates(cwd: string, templates: Readonly<Record<stri
     const absoluteTemplatePath = path.resolve(cwd, templatePath);
     const templateBuffer = await fs.readFile(absoluteTemplatePath);
 
-    result[key] = templateBuffer.toString("utf8");
+    result.set(key, templateBuffer.toString("utf8"));
   }
 
   return result;

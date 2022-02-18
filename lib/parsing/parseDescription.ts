@@ -9,8 +9,10 @@ import ts from "typescript";
 export function parseDescription(typeChecker: ts.TypeChecker, symbol: ts.Symbol): string {
   const descriptionElements: Array<string> = [];
   for (const comment of symbol.getDocumentationComment(typeChecker)) {
-    if (comment.kind !== "text") continue;
-    descriptionElements.push(comment.text.replace("\r\n", "\n").replace("\n", " "));
+    const { kind, text } = comment;
+    if (kind !== "text") continue;
+
+    descriptionElements.push(text.replace(/\r?\n/, " "));
   }
 
   return descriptionElements.join("\n\n");

@@ -85,15 +85,6 @@ async function writeDocuments(
       }
     }
 
-    // Sort types in alphabetical order.
-    documentedTypes.sort((a, b) => {
-      const nameA = a.name.toUpperCase();
-      const nameB = b.name.toUpperCase();
-      if (nameA < nameB) return -1;
-      if (nameA > nameB) return 1;
-      return 0;
-    });
-
     const compiledTemplate = handlebars.compile(
       `${templateSource}\n##### Generated with [Documental](https://github.com/Tharaxis/documental)`,
       { noEscape: true }
@@ -135,13 +126,26 @@ export async function main(cwd: string): Promise<void> {
 
     // Register Handlebars Helpers
     handlebars.registerHelper({
-      "isEqual": (value1, value2) => value1 === value2,
-      "isEmpty": (value) => {
+      "isEqual": (value1: any, value2: any) => value1 === value2,
+      "isEmpty": (value: any) => {
         if (!Array.isArray(value)) return true;
         return value.length === 0;
       },
-      and: (...args) => Array.prototype.every.call(args, Boolean),
-      or: (...args) => Array.prototype.slice.call(args, 0, -1).some(Boolean),
+      "and": (...args: Array<any>) => Array.prototype.every.call(args, Boolean),
+      "or": (...args: Array<any>) => Array.prototype.slice.call(args, 0, -1).some(Boolean),
+      "sort": (arr: Array<any>, field?: string) => {
+        return (field === undefined) ?
+          arr.sort() :
+          arr.sort((a, b) => {
+            const fieldA = a[field];
+            const fieldB = b[field];
+            const valueA = (typeof fieldA === "string") ? fieldA.toUpperCase() : fieldA;
+            const valueB = (typeof fieldB === "string") ? fieldB.toUpperCase() : fieldB;
+            if (valueA < valueB) return -1;
+            if (valueA > valueB) return 1;
+            return 0;
+          });
+      }
     });
 
     await loadPartials(basePath, partials);

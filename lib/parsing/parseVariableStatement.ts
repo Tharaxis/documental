@@ -25,9 +25,15 @@ export function parseVariableStatement(typeChecker: ts.TypeChecker, variableStat
   const description = parseDescription(typeChecker, declarationSymbol);
   const type = typeChecker.getTypeOfSymbolAtLocation(declarationSymbol, valueDeclaration);
 
-  if (isComponentType(type)) {
-    const propsType = type?.aliasTypeArguments?.[0];
-    const properties = (propsType) ? parseFields(typeChecker, propsType) : []
+  if (type.isUnion()) return null;
+
+  const componentType = (type.isUnionOrIntersection()) ?
+    type.types.find((type) => isComponentType(type)) :
+    type;
+
+  if (componentType && isComponentType(componentType)) {
+    const propsType = componentType.aliasTypeArguments?.[0];
+    const properties = (propsType) ? parseFields(typeChecker, propsType) : [];
 
     return {
       id: name,

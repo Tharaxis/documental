@@ -1,4 +1,4 @@
-import ts from "typescript";
+import ts, { nodeModuleNameResolver } from "typescript";
 import { parseDescription } from "./parseDescription";
 import { FieldInfo } from "../model";
 
@@ -21,7 +21,6 @@ export function parseFields(typeChecker: ts.TypeChecker, type: ts.Type): Readonl
     if (!type) continue;
 
     const propertyType = typeChecker.getTypeFromTypeNode(type);
-
     const name = property.name;
     const description = parseDescription(typeChecker, property);
     const optional = ((property.flags & ts.SymbolFlags.Optional) !== 0);

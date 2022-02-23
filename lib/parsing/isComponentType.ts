@@ -7,6 +7,8 @@ import ts from "typescript";
  */
 export function isComponentType(type: ts.Type): boolean {
   const { symbol: typeSymbol } = type;
+  if (!typeSymbol) return false;
+
   const { name: typeName } = typeSymbol;
 
   return (typeName === "FunctionComponent" || typeName === "VoidFunctionComponent");

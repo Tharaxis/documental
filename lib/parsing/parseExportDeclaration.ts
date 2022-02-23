@@ -14,15 +14,22 @@ export function parseExportDeclaration(typeChecker: ts.TypeChecker, exportDeclar
   if (!moduleSpecifier) return null;
   if (!ts.isStringLiteral(moduleSpecifier)) return null;
 
-  // TODO: right now we parse wildcard exports only, in the future we can try parse others.
-  if (exportClause) return null;
-
   const { text } = moduleSpecifier;
+  let name = path.parse(text).name;
+
+  // TODO: right now we parse wildcard exports only, in the future we can try parse others.
+  if (exportClause) {
+    if (ts.isNamespaceExport(exportClause)) {
+      name = exportClause.name.text;
+    } else {
+      return null;
+    }
+  }
 
   return {
     id: text,
     type: "export",
-    name: path.parse(text).name,
+    name,
     path: text,
     description: undefined
   }

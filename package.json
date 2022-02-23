@@ -1,6 +1,6 @@
 {
   "name": "documental",
-  "version": "0.2.20",
+  "version": "0.2.30",
   "description": "Documental React Component Documentation Generator",
   "main": "./lib/index.ts",
   "bin": "./bin/cli.js",

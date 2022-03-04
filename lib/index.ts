@@ -131,6 +131,11 @@ export async function main(cwd: string): Promise<void> {
         if (!Array.isArray(value)) return true;
         return value.length === 0;
       },
+      "isMatch": (value: any, matcher: any) => {
+        if (typeof value !== "string") return false;
+        if (typeof matcher !== "string") return false;
+        return !!(value as string).match(matcher);
+      },
       "and": (...args: Array<any>) => Array.prototype.every.call(args, Boolean),
       "or": (...args: Array<any>) => Array.prototype.slice.call(args, 0, -1).some(Boolean),
       "sort": (arr: Array<any>, field?: string) => {

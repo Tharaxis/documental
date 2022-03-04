@@ -29,6 +29,7 @@ export function parseExportDeclaration(typeChecker: ts.TypeChecker, exportDeclar
   return {
     id: text,
     type: "export",
+    actualType: "export",
     name,
     path: text,
     description: undefined

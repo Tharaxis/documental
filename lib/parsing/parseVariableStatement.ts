@@ -38,6 +38,7 @@ export function parseVariableStatement(typeChecker: ts.TypeChecker, variableStat
     return {
       id: name,
       type: "component",
+      actualType: "component",
       name,
       description,
       properties

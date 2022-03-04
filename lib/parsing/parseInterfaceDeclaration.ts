@@ -21,6 +21,7 @@ export function parseInterfaceDeclaration(typeChecker: ts.TypeChecker, node: ts.
   return {
     id: name,
     type: "interface",
+    actualType: "interface",
     name,
     description,
     fields

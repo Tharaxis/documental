@@ -14,6 +14,11 @@ export interface TypeInfoBase<T extends string> {
   readonly type: T;
 
   /**
+   * The actual type.
+   */
+  readonly actualType: T;
+
+  /**
    * The type name.
    */
   readonly name: string;

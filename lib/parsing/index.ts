@@ -7,3 +7,4 @@ export * from "./parseSourceFile";
 export * from "./parseInterfaceDeclaration";
 export * from "./parseDocumentationNode";
 export * from "./parseExportDeclaration";
+export * from "./parseFunctionDeclaration";

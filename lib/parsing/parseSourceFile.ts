@@ -1,7 +1,7 @@
 import ts from "typescript";
 import { isNodeExported } from "./isNodeExported";
 import { TypeInfo } from "../model";
-import { parseExportDeclaration, parseInterfaceDeclaration, parseVariableStatement } from ".";
+import { parseExportDeclaration, parseInterfaceDeclaration, parseVariableStatement, parseFunctionDeclaration } from ".";
 
 /**
  * Parses the specified source file.
@@ -23,6 +23,8 @@ export function parseSourceFile(typeChecker: ts.TypeChecker, sourceFile: ts.Sour
       type = parseInterfaceDeclaration(typeChecker, node);
     } else if (ts.isExportDeclaration(node)) {
       type = parseExportDeclaration(typeChecker, node);
+    } else if (ts.isFunctionDeclaration(node)) {
+      type = parseFunctionDeclaration(typeChecker, node);
     }
 
     if (type) result.push(type);

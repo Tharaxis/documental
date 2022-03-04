@@ -8,6 +8,7 @@ import { getProgramFiles } from "./getProgramFiles";
 import { DocumentationNode, IndexDocumentationNode, TypeInfo } from "./model";
 import { parseSourceFile, parseDocumentationNode } from "./parsing";
 import { loadPartials } from "./loadPartials";
+import * as helpers from "./helpers";
 
 function generateDocumentNodeLookups(cwd: string, sourceFiles: ReadonlyArray<ts.SourceFile>): [
   ReadonlyMap<string, ReadonlyArray<DocumentationNode>>,
@@ -124,34 +125,7 @@ export async function main(cwd: string): Promise<void> {
     const [documentationNodes, documentationNodeLookup] = generateDocumentNodeLookups(basePath, sourceFiles);
     sourceFiles = sourceFiles.filter(({ fileName }) => !!documentationNodeLookup.get(path.resolve(basePath, fileName)));
 
-    // Register Handlebars Helpers
-    handlebars.registerHelper({
-      "isEqual": (value1: any, value2: any) => value1 === value2,
-      "isEmpty": (value: any) => {
-        if (!Array.isArray(value)) return true;
-        return value.length === 0;
-      },
-      "isMatch": (value: any, matcher: any) => {
-        if (typeof value !== "string") return false;
-        if (typeof matcher !== "string") return false;
-        return !!(value as string).match(matcher);
-      },
-      "and": (...args: Array<any>) => Array.prototype.every.call(args, Boolean),
-      "or": (...args: Array<any>) => Array.prototype.slice.call(args, 0, -1).some(Boolean),
-      "sort": (arr: Array<any>, field?: string) => {
-        return (field === undefined) ?
-          arr.sort() :
-          arr.sort((a, b) => {
-            const fieldA = a[field];
-            const fieldB = b[field];
-            const valueA = (typeof fieldA === "string") ? fieldA.toUpperCase() : fieldA;
-            const valueB = (typeof fieldB === "string") ? fieldB.toUpperCase() : fieldB;
-            if (valueA < valueB) return -1;
-            if (valueA > valueB) return 1;
-            return 0;
-          });
-      }
-    });
+    handlebars.registerHelper(helpers);
 
     await loadPartials(basePath, partials);
 

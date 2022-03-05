@@ -25,9 +25,13 @@ export function parseFields(typeChecker: ts.TypeChecker, type: ts.Type): Readonl
     const description = parseDescription(typeChecker, property);
     const optional = ((property.flags & ts.SymbolFlags.Optional) !== 0);
 
+    let types = [typeChecker.typeToString(propertyType)];
+
+    /*
     let types = (propertyType.isUnion()) ?
       propertyType.types.map((type) => typeChecker.typeToString(type)) :
       [typeChecker.typeToString(propertyType)];
+    */
 
     // replace true/false union with boolean.
     if (types.includes("false") && types.includes("true") && !types.includes("boolean")) {

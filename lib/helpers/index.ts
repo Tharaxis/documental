@@ -9,3 +9,4 @@ export { sortBy } from "./sortBy";
 export { length } from "./length";
 export { and } from "./and";
 export { or } from "./or";
+export { join } from "./join";

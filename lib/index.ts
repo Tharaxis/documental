@@ -112,7 +112,7 @@ export async function main(cwd: string): Promise<void> {
     if (!templates) throw new Error("No templates specified.");
 
     const configFile = ts.findConfigFile(basePath, ts.sys.fileExists, "tsconfig.json");
-    if (!configFile) throw Error('tsconfig.json not found')
+    if (!configFile) throw Error("tsconfig.json not found");
     const { config } = ts.readConfigFile(configFile, ts.sys.readFile)
 
     const { options, fileNames, errors } = ts.parseJsonConfigFileContent(config, ts.sys, basePath);

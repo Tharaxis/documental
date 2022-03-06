@@ -113,6 +113,9 @@ export async function main(cwd: string): Promise<void> {
 
     const configFile = ts.findConfigFile(basePath, ts.sys.fileExists, "tsconfig.json");
     if (!configFile) throw Error("tsconfig.json not found");
+
+    console.log(`Using TypeScript configuration at ${configFile}`);
+
     const { config } = ts.readConfigFile(configFile, ts.sys.readFile)
 
     const { options, fileNames, errors } = ts.parseJsonConfigFileContent(config, ts.sys, basePath);

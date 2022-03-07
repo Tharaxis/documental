@@ -107,9 +107,7 @@ async function writeDocuments(
  */
 export async function main(cwd: string): Promise<void> {
   try {
-    const { basePath = cwd, files, templates, partials = {} } = await loadConfiguration(cwd);
-
-    if (!files || files.length === 0) throw new Error("No files specified.");
+    const { basePath = cwd, templates, partials = {} } = await loadConfiguration(cwd);
     if (!templates) throw new Error("No templates specified.");
 
     // const paths = await getProgramFiles(basePath, files);

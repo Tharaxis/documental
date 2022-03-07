@@ -4,6 +4,7 @@ import path from "path";
 import handlebars from "handlebars";
 import { loadConfiguration } from "./loadConfiguration";
 import { loadTemplates } from "./loadTemplates";
+import { getProgramFiles } from "./getProgramFiles";
 import { DocumentationNode, IndexDocumentationNode, TypeInfo } from "./model";
 import { parseSourceFile, parseDocumentationNode } from "./parsing";
 import { loadPartials } from "./loadPartials";
@@ -111,15 +112,22 @@ export async function main(cwd: string): Promise<void> {
     if (!files || files.length === 0) throw new Error("No files specified.");
     if (!templates) throw new Error("No templates specified.");
 
-    const configFile = ts.findConfigFile(basePath, ts.sys.fileExists, "tsconfig.json");
+    // const paths = await getProgramFiles(basePath, files);
+    //if (paths.length === 0) throw new Error("No files found.");
+
+    const configFile = ts.findConfigFile(path.resolve(basePath), ts.sys.fileExists, "tsconfig.json");
     if (!configFile) throw Error("tsconfig.json not found");
 
     console.log(`Using TypeScript configuration at ${configFile}`);
 
-    const { config } = ts.readConfigFile(configFile, ts.sys.readFile)
-
+    const { config } = ts.readConfigFile(configFile, ts.sys.readFile);
     const { options, fileNames, errors } = ts.parseJsonConfigFileContent(config, ts.sys, basePath);
+
+    console.log("Building...");
+
     const program = ts.createProgram({ options, rootNames: fileNames, configFileParsingDiagnostics: errors });
+
+    console.log("Generating Documentation...");
 
     const typeChecker = program.getTypeChecker();
     let sourceFiles = program.getSourceFiles();
@@ -135,6 +143,8 @@ export async function main(cwd: string): Promise<void> {
       parseTypes(basePath, sourceFiles, typeChecker),
       await loadTemplates(basePath, templates ?? {}));
 
+
+    console.log("Done.");
   } catch(err) {
     console.log(err);
   } finally {

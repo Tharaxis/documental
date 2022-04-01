@@ -36,10 +36,6 @@ export function parseVariableStatement(typeChecker: ts.TypeChecker, variableStat
       componentType.aliasTypeArguments?.[1] :
       componentType.aliasTypeArguments?.[0];
 
-    if (componentType.symbol?.name === "ForwardRefExoticComponent") {
-      console.log(propsType);
-    }
-
     const properties = (propsType) ? parseFields(typeChecker, propsType) : [];
 
     return {

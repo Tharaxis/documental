@@ -17,15 +17,16 @@ export function parseFields(typeChecker: ts.TypeChecker, type: ts.Type): Readonl
     if (!valueDeclaration) continue;
     if (!ts.isPropertySignature(valueDeclaration)) continue;
 
-    const { type } = valueDeclaration;
-    if (!type) continue;
+    const { type: typeNode } = valueDeclaration;
+    if (!typeNode) continue;
 
-    const propertyType = typeChecker.getTypeFromTypeNode(type);
+    const propertyType = typeChecker.getTypeOfSymbolAtLocation(property, valueDeclaration);
     const name = property.name;
     const description = parseDescription(typeChecker, property);
     const optional = ((property.flags & ts.SymbolFlags.Optional) !== 0);
 
     let types = [typeChecker.typeToString(propertyType)];
+    types[0] = types[0].replace(" | undefined", ""); // Hacky but does the job. Need to investigate the typeToString flags.
 
     /*
     let types = (propertyType.isUnion()) ?

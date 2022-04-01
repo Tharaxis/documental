@@ -75,6 +75,7 @@ async function writeDocuments(
       for (const type of types) {
         const exportData = exports.get(type.id) ?? exports.get("*");
         if (!exportData) continue;
+        if (exportData["hide"] !== undefined) continue;
 
         // TODO: we should exclude from data/exportData any fields whose names match those in type that are non-string values, as well as the field.
         // TODO: this is so that we allow overriding individual string data, but not more underlying complex data.

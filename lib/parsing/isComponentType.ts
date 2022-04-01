@@ -11,5 +11,5 @@ export function isComponentType(type: ts.Type): boolean {
 
   const { name: typeName } = typeSymbol;
 
-  return (typeName === "FunctionComponent" || typeName === "VoidFunctionComponent");
+  return (typeName === "FunctionComponent" || typeName === "VoidFunctionComponent" || typeName === "ForwardRefExoticComponent");
 }

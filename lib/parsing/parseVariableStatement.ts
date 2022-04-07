@@ -1,4 +1,4 @@
-import ts from "typescript";
+import ts, { isContinueStatement, isParameter } from "typescript";
 import { isComponentType } from "./isComponentType";
 import { parseDescription } from "./parseDescription";
 import { TypeInfo } from "../model";
@@ -28,13 +28,38 @@ export function parseVariableStatement(typeChecker: ts.TypeChecker, variableStat
   if (type.isUnion()) return null;
 
   const componentType = (type.isUnionOrIntersection()) ?
-    type.types.find((type) => isComponentType(type)) :
+    type.types.find((type) => isComponentType(typeChecker, type)) :
     type;
 
-  if (componentType && isComponentType(componentType)) {
-    const propsType = (componentType.symbol?.name === "ForwardRefExoticComponent") ?
-      componentType.aliasTypeArguments?.[1] :
-      componentType.aliasTypeArguments?.[0];
+  if (componentType && isComponentType(typeChecker, componentType)) {
+    if (!componentType.symbol) return null;
+
+    let propsType: ts.Type | undefined;
+    const typeName = typeChecker.getFullyQualifiedName(componentType.symbol);
+    if (typeName === "React.ForwardRefExoticComponent") {
+      propsType = componentType.aliasTypeArguments?.[1];
+    } else if (typeName === "React.VoidFunctionComponent" || typeName === "React.FunctionComponent") {
+      propsType = componentType.aliasTypeArguments?.[0];
+    } else {
+      const callSignatures = componentType.getCallSignatures();
+      if (callSignatures && callSignatures.length > 0) {
+        for (const signature of callSignatures) {
+          if (!signature.declaration) continue;
+
+          const returnType = signature.getReturnType();
+          if (!returnType || !returnType.symbol) continue;
+
+          const name = typeChecker.getFullyQualifiedName(returnType.symbol);
+          if (name !== "global.JSX.Element") continue;
+
+          if (signature.parameters.length === 0) continue;
+
+          propsType = typeChecker.getTypeOfSymbolAtLocation(signature.parameters[0], signature.declaration);
+        }
+      }
+
+      // first parameter type is type.
+    }
 
     const properties = (propsType) ? parseFields(typeChecker, propsType) : [];
 
